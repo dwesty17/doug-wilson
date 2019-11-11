@@ -3,8 +3,8 @@ from decimal import Decimal
 from re import sub
 
 
-def get_transaction_type(amount, vendor_type):
-    if vendor_type == "Standard Transfer":
+def get_transaction_type(amount, ext_type):
+    if ext_type == "Standard Transfer":
         return "TRANSFER"
     return "CREDIT" if amount < 0 else "DEBIT"
 
@@ -26,10 +26,10 @@ def parse_venmo(statement_csv):
                 statement["starting_balance"] = Decimal(sub(r'[^\d\-.]', '', row[12]))
             else:
                 statement["transactions"].append({
+                    "vendor": "VENMO",
                     "transaction_date": datetime.strptime(row[2], "%Y-%m-%dT%H:%M:%S"),
                     "description": row[5],
                     "total_amount": Decimal(sub(r'[^\d\-.]', '', row[8])),
-                    "amount_owed": Decimal(sub(r'[^\d\-.]', '', row[8])),
                     "type": get_transaction_type(Decimal(sub(r'[^\d\-.]', '', row[8])), row[3]),
                 })
                 statement["current_balance"] += Decimal(sub(r'[^\d\-.]', '', row[8]))

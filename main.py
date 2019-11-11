@@ -1,4 +1,5 @@
 from csv import reader
+from decimal import Decimal
 from pathlib import Path
 
 from parsers import parse_amex, parse_chase_credit, parse_chase_debit, parse_venmo
@@ -48,14 +49,21 @@ print("Number of Debits: " + str(number_of_debits))
 print("Number of Transfers: " + str(number_of_transfers))
 print("")
 
-print("Transaction per day: " + str(number_of_transactions / log_duration_days))
-print("Credits per day: " + str(number_of_credits / log_duration_days))
+print("Transaction per day: " + str(round((number_of_transactions / log_duration_days), 1)))
+print("Credits per day: " + str(round((number_of_credits / log_duration_days), 1)))
 print("")
 
-# TODO total value of credits
-# TODO average credit amount per day
-# TODO total value of debits
-# TODO average debit value per day
-# TODO difference between credit and debit value
+money_earned = Decimal(0)
+money_spent = Decimal(0)
+for transaction in transaction_log.transactions:
+    money_earned += transaction["total_amount"] if transaction["type"] == "DEBIT" else Decimal(0)
+    money_spent -= transaction["total_amount"] if transaction["type"] == "CREDIT" else Decimal(0)
 
-transaction_log.daily_net_worth_breakdown()
+print("Total money earned: $" + str(money_earned))
+print("Total money spent: $" + str(money_spent))
+print("Money earned per day: $" + str(round((money_earned / log_duration_days), 2)))
+print("Money spent per day: $" + str(round((money_spent / log_duration_days), 2)))
+print("Net money change: " + str(money_earned - money_spent))
+print("")
+
+# transaction_log.daily_breakdown()

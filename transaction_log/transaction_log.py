@@ -6,30 +6,22 @@ class TransactionLog:
         self.transactions = []
         self.starting_balance = Decimal(0)
 
-    def daily_net_worth_breakdown(self):
-        print("Net worth overview")
+    def daily_breakdown(self):
+        print("Daily Breakdown")
         print("----------")
         print("")
+        current_date = self.transactions[0]["transaction_date"].date
 
-        current_net_worth = self.starting_balance
-        print("Starting net worth: " + str(current_net_worth))
-        print("")
-
-        print("Net worth by day")
-        print("----------")
-        print("")
-        current_day = self.transactions[0]["transaction_date"].day
+        amount_spent_today = Decimal(0)
         for transaction in self.transactions:
-            if transaction["transaction_date"].day != current_day:
-                print(str(current_day) + ": " + str(current_net_worth))
-                current_day = transaction["transaction_date"].day
+            if transaction["transaction_date"].day != current_date:
+                print(current_date + ": " + str(amount_spent_today))
+                amount_spent_today = Decimal(0)
+                current_date = transaction["transaction_date"]
             else:
-                current_net_worth += transaction["amount_owed"]
+                amount_spent_today -= transaction["total_amount"] if transaction["type"] == "CREDIT" else Decimal(0)
 
     def add_statement(self, statement):
-        self.starting_balance += statement.starting_balance
+        self.starting_balance += statement["starting_balance"]
         self.transactions.extend(statement["transactions"])
-        self.transactions = sorted(
-            self.transactions,
-            key=lambda t: t["transaction_date"]
-        )
+        self.transactions = sorted(self.transactions, key=lambda t: t["transaction_date"])
