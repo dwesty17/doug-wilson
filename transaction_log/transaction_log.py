@@ -5,7 +5,6 @@ class TransactionLog:
     def __init__(self):
         self.transactions = []
         self.starting_balance = Decimal(0)
-        self.current_balance = Decimal(0)
 
     def daily_net_worth_breakdown(self):
         print("Net worth overview")
@@ -27,8 +26,9 @@ class TransactionLog:
             else:
                 current_net_worth += transaction["amount_owed"]
 
-    def add_transaction(self, transaction):
-        self.transactions.append(transaction)
+    def add_statement(self, statement):
+        self.starting_balance += statement.starting_balance
+        self.transactions.extend(statement["transactions"])
         self.transactions = sorted(
             self.transactions,
             key=lambda t: t["transaction_date"]

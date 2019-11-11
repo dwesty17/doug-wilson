@@ -8,8 +8,7 @@ from transaction_log import TransactionLog
 def parse_statement(path, statement_parser):
     with open(path) as csv_file:
         statement = statement_parser(reader(csv_file, delimiter=','))
-        for transaction in statement["transactions"]:
-            transaction_log.add_transaction(transaction)
+        transaction_log.add_statement(statement)
 
 
 parsers = [
