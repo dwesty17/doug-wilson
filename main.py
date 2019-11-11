@@ -66,4 +66,7 @@ print("Money spent per day: $" + str(round((money_spent / log_duration_days), 2)
 print("Net money change: " + str(money_earned - money_spent))
 print("")
 
-# transaction_log.daily_breakdown()
+transaction_log.daily_breakdown()
+print("")
+
+print("Done!")
